@@ -70,12 +70,11 @@
             text-align: center;
         }
         .rounded-pfp {
-            border-radius: 50%; /* Makes the image round */
-            width: 100px; /* Size of the profile picture */
+            border-radius: 50%;
+            width: 100px;
         }
-        /* Adjust the appearance of the Sign-In button */
         #googleSignIn {
-            background-color: #4285F4; /* Google blue color */
+            background-color: #4285F4;
             color: white;
             border: none;
             padding: 10px 15px;
@@ -87,7 +86,7 @@
             transition: background-color 0.3s ease;
         }
         #googleSignIn:hover {
-            background-color: #357AE8; /* Darker blue on hover */
+            background-color: #357AE8;
         }
     </style>
 </head>
@@ -189,23 +188,20 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
 
-        // Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyDHzW9zVRMkhZakRs5reLimI0NPtLejc4Q",
-            authDomain: "login-7afe1.firebaseapp.com",
-            projectId: "login-7afe1",
-            storageBucket: "login-7afe1.appspot.com",
-            messagingSenderId: "1001689689419",
-            appId: "1:1001689689419:web:8fae6de5d31f027a4e8cce",
-            measurementId: "G-BF1H1JQLX8"
+            apiKey: "AIzaSyC7wfMI_f-nvZSZi-_PY6w22mxJD0jZkzk",
+            authDomain: "orbit-games-auth.firebaseapp.com",
+            projectId: "orbit-games-auth",
+            storageBucket: "orbit-games-auth.firebasestorage.app",
+            messagingSenderId: "779763234363",
+            appId: "1:779763234363:web:28d2bfd50bb1e6cc010e1e",
+            measurementId: "G-HF7MPN5HKP"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const provider = new GoogleAuthProvider();
 
-        // Sign-in function
         document.getElementById('googleSignIn').addEventListener('click', () => {
             signInWithPopup(auth, provider)
                 .then((result) => {
@@ -218,7 +214,6 @@
                 });
         });
 
-        // Sign-out function
         document.getElementById('googleSignOut').addEventListener('click', () => {
             signOut(auth).then(() => {
                 clearUserInfo();
@@ -227,7 +222,6 @@
             });
         });
 
-        // Handle authentication state change
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 updateUserInfo(user);
@@ -236,26 +230,21 @@
             }
         });
 
-        // Update and display user information
         function updateUserInfo(user) {
-            document.getElementById('pfp-container').src = user.photoURL; // Update the profile image
+            document.getElementById('pfp-container').src = user.photoURL;
 
-            // Hide sign in button and show sign out button
             document.getElementById('googleSignIn').style.display = 'none';
             document.getElementById('googleSignOut').style.display = 'inline';
-            document.getElementById('pfp-container').addEventListener('click', openProfileContainer); // Add click event to the profile image
+            document.getElementById('pfp-container').addEventListener('click', openProfileContainer);
         }
 
-        // Clear user info upon sign-out
         function clearUserInfo() {
-            document.getElementById('pfp-container').src = 'favicon.ico'; // Reset to favicon
+            document.getElementById('pfp-container').src = 'favicon.ico';
 
-            // Show sign in button and hide sign out button
             document.getElementById('googleSignIn').style.display = 'inline';
             document.getElementById('googleSignOut').style.display = 'none';
         }
 
-        // Function to open profile container
         function openProfileContainer() {
             const user = auth.currentUser;
             const profileContainer = document.createElement('div');
@@ -269,13 +258,11 @@
             `;
             document.body.appendChild(profileContainer);
 
-            // Close the profile container on click
             profileContainer.addEventListener('click', () => {
                 document.body.removeChild(profileContainer);
             });
         }
 
-        // Battery status and date/time functionalities
         function updateBatteryStatus() {
             navigator.getBattery().then(function(battery) {
                 const batteryPercentage = Math.round(battery.level * 100);
