@@ -1,20 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <!--  
-░▒▓██████▓▒░░▒▓███████▓▒░░▒▓███████▓▒░░▒▓█▓▒░▒▓████████▓▒░ 
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓█▓▒░     
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓█▓▒░     
-░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓███████▓▒░░▒▓█▓▒░  ░▒▓█▓▒░     
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓█▓▒░     
-░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓█▓▒░     
- ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓█▓▒░  ░▒▓█▓▒░ -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orbit V2</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMI4Fcp0+nW5o5NhfKGTAXzCTd2x4A2Y5c1c1z" crossorigin="anonymous">
+    
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -62,6 +55,40 @@
             text-decoration: none;
             font-weight: 500;
         }
+        .profile-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            z-index: 1000; 
+        }
+        .profile-box {
+            text-align: center;
+        }
+        .rounded-pfp {
+            border-radius: 50%; /* Makes the image round */
+            width: 100px; /* Size of the profile picture */
+        }
+        /* Adjust the appearance of the Sign-In button */
+        #googleSignIn {
+            background-color: #4285F4; /* Google blue color */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        #googleSignIn:hover {
+            background-color: #357AE8; /* Darker blue on hover */
+        }
     </style>
 </head>
 <body>
@@ -69,7 +96,7 @@
         <header>
             <nav>
                 <div class="header-links">
-                    <a href="accounts" class="nav-link">Sign in</a>
+                    <button id="googleSignIn" class="nav-link">Sign in</button>
                     <a href="/active/embed.html?url=https://images.bing.com" class="nav-link">Bing Images</a>
                     <div class="apps-wrapper">
                         <a href="#" class="apps">
@@ -79,8 +106,9 @@
                         </a>
                     </div>
                     <a href="#" class="profile">
-                        <img src="favicon.ico" alt="Profile">
+                        <img src="favicon.ico" alt="Profile" id="pfp-container" style="width: 30px; height: 30px; border-radius: 50%;">
                     </a>
+                    <button id="googleSignOut" style="display: none;" class="nav-link">Sign out</button>
                 </div>
             </nav>
         </header>
@@ -157,8 +185,97 @@
     </div>
 
     <script src="script.js"></script>
-    <script>
-        
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDHzW9zVRMkhZakRs5reLimI0NPtLejc4Q",
+            authDomain: "login-7afe1.firebaseapp.com",
+            projectId: "login-7afe1",
+            storageBucket: "login-7afe1.appspot.com",
+            messagingSenderId: "1001689689419",
+            appId: "1:1001689689419:web:8fae6de5d31f027a4e8cce",
+            measurementId: "G-BF1H1JQLX8"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        // Sign-in function
+        document.getElementById('googleSignIn').addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    updateUserInfo(user);
+                })
+                .catch((error) => {
+                    console.error("Error signing in: ", error);
+                    alert("Error: " + error.message);
+                });
+        });
+
+        // Sign-out function
+        document.getElementById('googleSignOut').addEventListener('click', () => {
+            signOut(auth).then(() => {
+                clearUserInfo();
+            }).catch((error) => {
+                console.error("Error signing out: ", error);
+            });
+        });
+
+        // Handle authentication state change
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                updateUserInfo(user);
+            } else {
+                clearUserInfo();
+            }
+        });
+
+        // Update and display user information
+        function updateUserInfo(user) {
+            document.getElementById('pfp-container').src = user.photoURL; // Update the profile image
+
+            // Hide sign in button and show sign out button
+            document.getElementById('googleSignIn').style.display = 'none';
+            document.getElementById('googleSignOut').style.display = 'inline';
+            document.getElementById('pfp-container').addEventListener('click', openProfileContainer); // Add click event to the profile image
+        }
+
+        // Clear user info upon sign-out
+        function clearUserInfo() {
+            document.getElementById('pfp-container').src = 'favicon.ico'; // Reset to favicon
+
+            // Show sign in button and hide sign out button
+            document.getElementById('googleSignIn').style.display = 'inline';
+            document.getElementById('googleSignOut').style.display = 'none';
+        }
+
+        // Function to open profile container
+        function openProfileContainer() {
+            const user = auth.currentUser;
+            const profileContainer = document.createElement('div');
+            profileContainer.className = 'profile-container';
+            profileContainer.innerHTML = `
+                <div class="profile-box">
+                    <img src="${user.photoURL}" alt="Profile Picture" class="rounded-pfp">
+                    <h2 style="font-family: 'Poppins', sans-serif; font-weight: bold;">${user.displayName}</h2>
+                    <p>Email: ${user.email}</p>
+                </div>
+            `;
+            document.body.appendChild(profileContainer);
+
+            // Close the profile container on click
+            profileContainer.addEventListener('click', () => {
+                document.body.removeChild(profileContainer);
+            });
+        }
+
+        // Battery status and date/time functionalities
         function updateBatteryStatus() {
             navigator.getBattery().then(function(battery) {
                 const batteryPercentage = Math.round(battery.level * 100);
@@ -178,7 +295,6 @@
         
         updateBatteryStatus();
         updateDateTime();
-
         setInterval(updateDateTime, 60000);
     </script>
 </body>
