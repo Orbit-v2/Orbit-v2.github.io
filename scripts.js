@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (searchInput.value.trim() !== '') {
             window.location.href = `/active/embed.html?url=${encodeURIComponent(`https://${searchInput.value}`)}&btnI=I%27m+Feeling+Lucky`;
         } else {
-            window.location.href = 'elasticman.html';
+            window.location.href = '/G/elasticman.html';
         }
     });
 
