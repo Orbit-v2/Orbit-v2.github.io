@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!--  
+<head>
+        <!--  
 ░▒▓██████▓▒░░▒▓███████▓▒░░▒▓███████▓▒░░▒▓█▓▒░▒▓████████▓▒░ 
 ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓█▓▒░     
 ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓█▓▒░     
@@ -8,12 +9,60 @@
 ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓█▓▒░     
 ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░  ░▒▓█▓▒░     
  ░▒▓██████▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░░▒▓█▓▒░  ░▒▓█▓▒░ -->
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orbit V2</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOMI4Fcp0+nW5o5NhfKGTAXzCTd2x4A2Y5c1c1z" crossorigin="anonymous">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: white;
+        }
+        .corner-box {
+            position: fixed;
+            border-radius: 15px;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            font-family: Arial, sans-serif;
+        }
+        .bottom-left {
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        .bottom-right {
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        .separator {
+            margin: 0 10px;
+            height: 20px;
+            width: 1px;
+            background-color: gray;
+        }
+        .center-links {
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 30px;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        .center-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -64,7 +113,7 @@
 
             <div class="search-buttons">
                 <button class="google-search-btn">Search Orbit...</button>
-                <button class="lucky-btn">Im feeling a game...</button>
+                <button class="lucky-btn">I'm feeling a game...</button>
             </div>
 
             <div class="shortcuts">
@@ -87,9 +136,50 @@
                     <span>Drive</span>
                 </div>
             </div>
+        </main>
+        
+        <div class="corner-box bottom-left" id="time-date">
+            <span id="time"></span>
+            <div class="separator"></div>
+            <span id="date"></span>
+        </div>
 
-          </main>
+        <div class="corner-box bottom-right">
+            <i class="fa fa-battery-half" aria-hidden="true"></i>
+            <span id="battery-percentage">0%</span>
+        </div>
+        
+        <div class="center-links">
+            <a href="movies.html">Movies</a>
+            <a href="games.html">Games</a>
+            <a href="apps.html">Apps</a>
+        </div>
+    </div>
 
     <script src="script.js"></script>
+    <script>
+        
+        function updateBatteryStatus() {
+            navigator.getBattery().then(function(battery) {
+                const batteryPercentage = Math.round(battery.level * 100);
+                document.getElementById('battery-percentage').textContent = batteryPercentage + '%';
+            });
+        }
+        
+        function updateDateTime() {
+            const now = new Date();
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const dateStr = now.toLocaleDateString(undefined, options);
+            const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            document.getElementById('date').textContent = dateStr;
+            document.getElementById('time').textContent = timeStr;
+        }
+        
+        updateBatteryStatus();
+        updateDateTime();
+
+        setInterval(updateDateTime, 60000);
+    </script>
 </body>
 </html>
