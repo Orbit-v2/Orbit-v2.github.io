@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     luckyButton.addEventListener('click', () => {
         if (searchInput.value.trim() !== '') {
-            window.location.href = `/G/elasticman.html`;
+            window.location.href = `/active/embed.html?url=${encodeURIComponent(`https://${searchInput.value}`)}&btnI=I%27m+Feeling+Lucky`;
         } else {
             window.location.href = '/G/elasticman.html';
         }
@@ -65,4 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+});
+
+document.getElementById('googleSignOut').addEventListener('click', () => {
+    if (confirm("Are you sure you want to sign out?")) {
+        signOut(auth).then(() => {
+            clearUserInfo();
+        }).catch((error) => {
+            console.error("Error signing out: ", error);
+        });
+    }
 });
